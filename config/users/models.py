@@ -3,9 +3,8 @@ from django.db import models
 
 NULLABLE = {"blank": True, "null": True}
 
-
-class User(AbstractUser):
-    """Cоздание модели Пользователя"""
+class User(AbstractUser ):
+    """Создание модели Пользователя"""
 
     username = None
 
@@ -38,11 +37,23 @@ class User(AbstractUser):
         **NULLABLE
     )
 
+    # Переопределяем поля groups и user_permissions с уникальными related_name
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',  # Уникальное имя
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_permissions_set',  # Уникальное имя
+        blank=True,
+    )
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = "Пользоаптель"
+        verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
